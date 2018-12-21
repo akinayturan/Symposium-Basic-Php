@@ -48,30 +48,33 @@ echo "<script type='text/javascript'> document.location = 'profile.php'; </scrip
 
 </head>
 
-<body>
+<body><div class="brand clearfix">
+    <h4 class="pull-left text-white text-uppercase" >&nbsp; ISESER2019 SIGNIN</h4>
+</div>
 	<div class="login-page bk-img">
 		<div class="form-content">
 			<div class="container">
 				<div class="row">
+
+                    <div class="hr-dashed"></div>
+                    <div class="well row pt-2x pb-3x bk-light text-center">
 					<div class="col-md-6 col-md-offset-3">
-						<h1 class="text-center text-bold mt-4x">Login</h1>
 						<div class="well row pt-2x pb-3x bk-light">
 							<div class="col-md-8 col-md-offset-2">
 								<form method="post">
-
-									<label for="" class="text-uppercase text-sm">Your Email</label>
-									<input type="text" placeholder="Username" name="username" class="form-control mb" required>
+									<label for="" class="text-uppercase text-sm">Email</label>
+									<input type="text" placeholder="Email" name="username" class="form-control mb" required>
 
 									<label for="" class="text-uppercase text-sm">Password</label>
 									<input type="password" placeholder="Password" name="password" class="form-control mb" required>
-									<button class="btn btn-primary btn-block" name="login" type="submit">LOGIN</button>
+									<button class="btn btn-primary btn-block" name="login" type="submit">SIGNIN</button>
 								</form>
 								<br>
-								<p>Don't Have an Account? <a href="register.php" >Signup</a></p>
+								<p>Don't Have an Account? <a class="btn btn-info btn-block"  href="signup.php" >SIGNUP</a></p>
 							</div>
 						</div>
 					</div>
-				</div>
+                    </div></div>
 			</div>
 		</div>
 	</div>

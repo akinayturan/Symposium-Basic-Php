@@ -5,7 +5,6 @@ include('includes/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
     header('location:index.php');
 } else {
-
     if (isset($_POST['submit'])) {
         $file = $_FILES['attachment']['name'];
         $file_loc = $_FILES['attachment']['tmp_name'];
@@ -227,15 +226,15 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                     <td><?php echo htmlspecialchars($row['title']) ?></td>
                                                     <td><?php echo htmlspecialchars($row['articlesdata']); ?></td>
                                                     <td><?php echo htmlspecialchars($row['ptype']); ?></td>
-                                                    <td><a href="attachment/<?php echo htmlspecialchars($row['attachment']); ?>"><i class="fa fa-user"></i> &nbsp;Download</a></td>
+                                                    <td>
+                                                        <a href="attachment/<?php echo htmlspecialchars($row['attachment']); ?>"><i
+                                                                    class="fa fa-folder"></i> &nbsp;Download</a></td>
                                                     <td><?php echo htmlspecialchars($row['u_status']); ?></td>
                                                     <td><?php echo htmlspecialchars($row['p_status']); ?></td>
                                                 </tr>
                                             <?php endwhile; ?>
                                             </tbody>
                                         </table>
-
-
 
 
                                     </div>

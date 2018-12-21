@@ -13,7 +13,7 @@
         </li>
         <li><a href="feedback.php"><i class="fa fa-envelope"></i> &nbsp;Feedback</a>
         </li>
-        <li><a href="notification.php"><i class="fa fa-bell"></i> &nbsp;Notification<sup style="color:red">*</sup></a>
+        <li><a href="notification.php"><i class="fa fa-bell"></i> &nbsp;Notification</a>
         </li>
         <li><a href="messages.php"><i class="fa fa-envelope"></i> &nbsp;Messages</a>
         </li>

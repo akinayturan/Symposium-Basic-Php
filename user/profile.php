@@ -48,6 +48,15 @@ if (strlen($_SESSION['alogin']) == 0) {
     }
     ?>
 
+    <?php
+    $email = $_SESSION['alogin'];
+    $sql = "SELECT * from users where email = (:email);";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':email', $email, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+    $cnt = 1;
+    ?>
     <!doctype html>
     <html lang="en" class="no-js">
 
@@ -78,7 +87,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         <!-- Admin Stye -->
         <link rel="stylesheet" href="css/style.css">
 
-        <script type="text/javascript" src="../vendor/countries.js"></script>
+
         <style>
             .errorWrap {
                 padding: 10px;
@@ -103,15 +112,6 @@ if (strlen($_SESSION['alogin']) == 0) {
     </head>
 
     <body>
-    <?php
-    $email = $_SESSION['alogin'];
-    $sql = "SELECT * from users where email = (:email);";
-    $query = $dbh->prepare($sql);
-    $query->bindParam(':email', $email, PDO::PARAM_STR);
-    $query->execute();
-    $result = $query->fetch(PDO::FETCH_OBJ);
-    $cnt = 1;
-    ?>
     <?php include('includes/header.php'); ?>
     <div class="ts-main-content">
         <?php include('includes/leftbar.php'); ?>
@@ -138,15 +138,10 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                             style="color:red">*</span></label>
 
                                                 <div class="col-sm-4 text-center">
-
                                                     <input type="file" name="image" class="form-control">
                                                     <input type="hidden" name="image" class="form-control"
                                                            value="<?php echo htmlentities($result->image); ?>">
                                                 </div>
-
-
-
-
                                             </div>
 
                                             <div class="form-group">
@@ -166,7 +161,6 @@ if (strlen($_SESSION['alogin']) == 0) {
                                             </div>
 
 
-
                                             <div class="form-group">
                                                 <label class="col-sm-2 control-label">titlecon<span
                                                             style="color:red">*</span></label>
@@ -182,7 +176,6 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                            value="<?php echo htmlentities($result->typecon); ?>">
                                                 </div>
                                             </div>
-
 
 
                                             <div class="form-group">
@@ -202,8 +195,6 @@ if (strlen($_SESSION['alogin']) == 0) {
                                             </div>
 
 
-
-
                                             <div class="form-group">
                                                 <label class="col-sm-2 control-label">department<span
                                                             style="color:red">*</span></label>
@@ -215,7 +206,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <label class="col-sm-2 control-label">address<span
                                                             style="color:red">*</span></label>
                                                 <div class="col-sm-4">
-                                                    <input type="email" name="address" class="form-control" required
+                                                    <input type="text" name="address" class="form-control" required
                                                            value="<?php echo htmlentities($result->address); ?>">
                                                 </div>
                                             </div>

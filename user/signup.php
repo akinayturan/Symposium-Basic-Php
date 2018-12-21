@@ -6,7 +6,7 @@ if (isset($_POST['submit'])) {
     $file_loc = $_FILES['image']['tmp_name'];
     $folder = "images/";
     $new_file_name = strtolower($file);
-    $final_file = str_replace(' ', '-', $new_file_name);
+    $final_file = str_replace(' ', '-', date('Y-m-d-H-i-s') . $new_file_name);
 
     $name = $_POST['name'];
     $surname = $_POST['surname'];
@@ -84,31 +84,33 @@ if (isset($_POST['submit'])) {
     <script type="text/javascript">
 
         function validate() {
-            var extensions = new Array("jpg", "jpeg");
-            var image_file = document.regform.image.value;
-            var image_length = document.regform.image.value.length;
-            var pos = image_file.lastIndexOf('.') + 1;
-            var ext = image_file.substring(pos, image_length);
-            var final_ext = ext.toLowerCase();
-            for (i = 0; i < extensions.length; i++) {
-                if (extensions[i] == final_ext) {
-                    return true;
 
+                var extensions = new Array("jpg", "jpeg");
+                var image_file = document.regform.image.value;
+                var image_length = document.regform.image.value.length;
+                var pos = image_file.lastIndexOf('.') + 1;
+                var ext = image_file.substring(pos, image_length);
+                var final_ext = ext.toLowerCase();
+                for (i = 0; i < extensions.length; i++) {
+                    if (extensions[i] == final_ext) {
+                        return true;
+                    }
                 }
-            }
-            alert("Image Extension Not Valid (Use Jpg,jpeg)");
-            return false;
+                alert("Image Extension Not Valid (Use Jpg,jpeg)");
+                return false;
         }
 
     </script>
 </head>
 <body>
+<div class="brand clearfix">
+    <h4 class="pull-left text-white text-uppercase" >&nbsp; ISESER2019  SIGNUP</h4>
+</div>
 <div class="login-page bk-img">
     <div class="form-content">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="text-center text-bold mt-2x">Register</h1>
                     <div class="hr-dashed"></div>
                     <div class="well row pt-2x pb-3x bk-light text-center">
                         <form method="post" class="form-horizontal" enctype="multipart/form-data" name="regform"
@@ -127,8 +129,8 @@ if (isset($_POST['submit'])) {
                             <div class="form-group">
                                 <label class="col-sm-1 control-label">Title<span style="color:red">*</span></label>
                                 <div class="col-sm-5">
-                                    <select id="titlecon" name="titlecon" data-style="btn-danger"
-                                            class="selectpicker form-control" title="*Title" required>
+                                    <select name="titlecon" class="form-control" required>
+                                        <option value="">Select</option>
                                         <option>Prof. Dr.</option>
                                         <option>Assoc. Prof. Dr.</option>
                                         <option>Assist. Prof. Dr.</option>
@@ -147,12 +149,11 @@ if (isset($_POST['submit'])) {
                                     </select>
 
                                 </div>
-                                <label class="col-sm-1 control-label">Type Of Congress Application<span
+                                <label class="col-sm-1 control-label">Type<span
                                             style="color:red">*</span></label>
                                 <div class="col-sm-5">
-                                    <select id="typecon" name="typecon" data-style="btn-danger"
-                                            class="selectpicker form-control" title="*Type Of Congress Application"
-                                            required>
+                                    <select name="typecon" class="form-control" required>
+                                        <option value="">Select</option>
                                         <option value='1'>Author</option>
                                         <option value='2'>Guest</option>
                                     </select>
@@ -213,16 +214,24 @@ if (isset($_POST['submit'])) {
                             <div class="form-group">
                                 <label class="col-sm-1 control-label">Avatar</label>
                                 <div class="col-sm-5">
-                                    <div><input type="file" name="image" class="form-control"></div>
+                                    <div><input type="file" name="image" value="demo.jpg" class="form-control"></div>
                                 </div>
                             </div>
 
                             <br>
-                            <button class="btn btn-primary" name="submit" type="submit">Register</button>
+                            <div class="form-group">
+                                <div class="col-md-4"></div>
+                                <button class="btn btn-primary col-md-4" name="submit" type="submit">Register</button>
+                                <div class="col-md-4"></div>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <br>
+                                <p>Already Have Account? <a href="index.php">Signin</a></p>
+                            </div>
                         </form>
-                        <br>
-                        <br>
-                        <p>Already Have Account? <a href="index.php">Signin</a></p>
                     </div>
                 </div>
             </div>
