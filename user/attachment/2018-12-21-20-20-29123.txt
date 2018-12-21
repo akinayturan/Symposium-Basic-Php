@@ -1,0 +1,16 @@
+name
+surname
+titlecon
+typecon
+institution
+faculty
+department
+address
+email
+gender
+mobileno
+image
+
+
+
+password
