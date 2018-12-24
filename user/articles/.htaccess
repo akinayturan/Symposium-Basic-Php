@@ -1,0 +1,7 @@
+Order Allow,Deny
+Deny from all
+
+<FilesMatch "\.(doc|docx)$">
+Order Deny,Allow
+   Allow from all
+</FilesMatch>
