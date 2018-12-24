@@ -1,6 +1,6 @@
 <div class="brand clearfix">
     <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px"><i
-                class="fa fa-user"></i>&nbsp;Hello, <?php echo $result->name . $result->surname; ?></h4>
+                class="fa fa-user"></i>&nbsp;WELCOME, <?php echo $result->name . " " . $result->surname; ?></h4>
     <span class="menu-btn"><i class="fa fa-bars"></i></span>
     <ul class="ts-profile-nav">
 
