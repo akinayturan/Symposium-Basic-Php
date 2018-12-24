@@ -78,7 +78,7 @@ if (isset($_POST['submit'])) {
 
             date_default_timezone_set('Europe/Istanbul');
 
-            require_once('class.phpmailer.php');
+            require_once('mail/class.phpmailer.php');
             $mail = new PHPMailer();
 
             $mail->IsSMTP(); // telling the class to use SMTP
@@ -151,6 +151,7 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en" class="no-js">
 
 <head>
+    <title>ISESER User Sign Up</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">

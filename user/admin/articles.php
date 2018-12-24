@@ -145,7 +145,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <td><?php echo htmlentities($result->title); ?></td>
                                                 <td><?php echo htmlentities($result->articlesdata); ?></td>
                                                 <td>
-                                                    <a href="../attachment/<?php echo htmlentities($result->attachment); ?>"><i
+                                                    <a href="../articles/<?php echo htmlentities($result->attachment); ?>"><i
                                                                 class="fa fa-folder"></i>&nbsp; Download</a>
                                                 </td>
 

@@ -8,7 +8,7 @@ if (strlen($_SESSION['alogin']) == 0) {
     if (isset($_POST['submit'])) {
         $file = $_FILES['attachment']['name'];
         $file_loc = $_FILES['attachment']['tmp_name'];
-        $folder = "attachment/";
+        $folder = "feedback/";
         $new_file_name = strtolower($file);
         $final_file = str_replace(' ', '-', $new_file_name);
 
@@ -63,6 +63,7 @@ if (strlen($_SESSION['alogin']) == 0) {
     <html lang="en" class="no-js">
 
     <head>
+        <title>ISESER User Feedback</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -206,6 +207,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <th>#</th>
                                                 <th>User</th>
                                                 <th>Message</th>
+                                                <th>Attachment</th>
                                             </tr>
                                             </thead>
 
@@ -218,6 +220,13 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td><?php echo htmlentities($cnt); ?></td>
                                                         <td><?php echo htmlentities($messages->sender); ?></td>
                                                         <td><?php echo htmlentities($messages->feedbackdata); ?></td>
+                                                        <td>
+                                                            <?php if (isset($messages->attachment)){ ?>
+                                                            <a target="_blank"
+                                                               href="feedback/<?php echo htmlspecialchars($messages->attachment); ?>"><i
+                                                                        class="fa fa-folder"></i> &nbsp;Download</a>
+                                                            <?php } ?>
+                                                        </td>
                                                     </tr>
                                                     <?php $cnt = $cnt + 1;
                                                 }

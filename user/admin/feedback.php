@@ -149,7 +149,7 @@ foreach($results as $result)
                                             <td><?php echo htmlentities($result->sender);?></td>
 											<td><?php echo htmlentities($result->title);?></td>
                                             <td><?php echo htmlentities($result->feedbackdata);?></td>
-                                            <td><a href="../attachment/<?php echo htmlentities($result->attachment);?>" ><?php echo htmlentities($result->attachment);?></a></td>
+                                            <td><a href="../feedback/<?php echo htmlentities($result->attachment);?>" ><?php echo htmlentities($result->attachment);?></a></td>
 											
 <td>
 <a href="sendreply.php?reply=<?php echo $result->sender;?>">&nbsp; <i class="fa fa-mail-reply"></i></a>&nbsp;&nbsp;

@@ -29,7 +29,7 @@ if (strlen($_SESSION['alogin']) == 0) {
             $image = $final_file;
         }
 
-        try{
+        try {
             $sql = "UPDATE users SET name=(:name), email=(:email), surname=(:surname), titlecon=(:titlecon), typecon=(:typecon), institution=(:institution), faculty=(:faculty), address=(:address), department=(:department), mobile=(:mobileno), Image=(:image) WHERE id=(:idedit)";
             $query = $dbh->prepare($sql);
             $query->bindParam(':name', $name, PDO::PARAM_STR);
@@ -47,8 +47,8 @@ if (strlen($_SESSION['alogin']) == 0) {
             $query->execute();
             $msg = "Information Updated Successfully";
 
-        } catch (PDOException $e){
-            $error = "Information Unsuccessfully :: ". $e ;
+        } catch (PDOException $e) {
+            $error = "Information Unsuccessfully :: " . $e;
         }
 
     }
@@ -76,6 +76,8 @@ if (strlen($_SESSION['alogin']) == 0) {
     <html lang="en" class="no-js">
 
     <head>
+        <title>ISESER User Profile</title>
+
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">

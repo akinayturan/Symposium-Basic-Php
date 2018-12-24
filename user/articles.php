@@ -28,7 +28,7 @@ if (strlen($_SESSION['alogin']) == 0) {
     if (isset($_POST['submit'])) {
         $file = $_FILES['attachment']['name'];
         $file_loc = $_FILES['attachment']['tmp_name'];
-        $folder = "attachment/";
+        $folder = "articles/";
         $new_file_name = strtolower($file);
         $final_file = str_replace(' ', '-', date('Y-m-d-H-i-s') . "_" . $new_file_name);
 
@@ -61,7 +61,6 @@ if (strlen($_SESSION['alogin']) == 0) {
             $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
             $query->bindParam(':title', $title, PDO::PARAM_STR);
 
-
             $query->bindParam(':paptype', $paptype, PDO::PARAM_STR);
             $query->bindParam(':ptype', $ptype, PDO::PARAM_STR);
             $query->bindParam(':articlesdata', $articlesdata, PDO::PARAM_STR);
@@ -73,7 +72,6 @@ if (strlen($_SESSION['alogin']) == 0) {
         }
     }
 
-
     $email = $_SESSION['alogin'];
     $sql = "SELECT * from users where email = (:email);";
     $query = $dbh->prepare($sql);
@@ -82,7 +80,6 @@ if (strlen($_SESSION['alogin']) == 0) {
     $result = $query->fetch(PDO::FETCH_OBJ);
     $cnt = 1;
 
-
     $email = $_SESSION['alogin'];
     $sql = "SELECT * FROM `articles` WHERE `sender` = (:email);";
     $query = $dbh->prepare($sql);
@@ -90,12 +87,13 @@ if (strlen($_SESSION['alogin']) == 0) {
     $query->execute();
     $resultArticle = $query->fetchAll(PDO::FETCH_OBJ);
     $cnt = 1;
-
     ?>
     <!doctype html>
     <html lang="en" class="no-js">
 
     <head>
+        <title>ISESER User Articles</title>
+
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -287,7 +285,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                     <td><?php echo htmlspecialchars($row->paptype); ?></td>
                                                     <td>
                                                         <a target="_blank"
-                                                           href="attachment/<?php echo htmlspecialchars($row->attachment); ?>"><i
+                                                           href="articles/<?php echo htmlspecialchars($row->attachment); ?>"><i
                                                                     class="fa fa-folder"></i> &nbsp;Download</a></td>
                                                     <td><?php echo htmlspecialchars($row->u_status); ?></td>
                                                     <td><?php echo htmlspecialchars($row->p_status); ?></td>
