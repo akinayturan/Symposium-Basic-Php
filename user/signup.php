@@ -1,5 +1,12 @@
 <?php
 include('admin/includes/config.php');
+
+function createHash($uzunluk = 16)
+{
+    $karakterler = 'qwertyuopasdfghjklizxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
+    return substr(str_shuffle($karakterler), 0, $uzunluk);
+}
+
 if (isset($_POST['submit'])) {
 
     $name = $_POST['name'];
@@ -12,6 +19,7 @@ if (isset($_POST['submit'])) {
     $address = $_POST['address'];
     $email = $_POST['email'];
     $password = md5($_POST['password']);
+    $hash = createHash();
     $gender = $_POST['gender'];
     $mobileno = $_POST['mobileno'];
 
@@ -30,7 +38,6 @@ if (isset($_POST['submit'])) {
         $image = "demo.jpg";
     }
 
-
     $notitype = 'Create Account';
     $reciver = 'Admin';
     $sender = $email;
@@ -44,7 +51,7 @@ if (isset($_POST['submit'])) {
         $querynoti->bindParam(':notitype', $notitype, PDO::PARAM_STR);
         $querynoti->execute();
 
-        $sql = "INSERT INTO users(name,surname,titlecon,typecon,institution,faculty,department,address, email, password, gender, mobile, image) VALUES(:name, :surname, :titlecon, :typecon, :institution, :faculty, :department, :address, :email, :password, :gender, :mobileno, :image)";
+        $sql = "INSERT INTO users(name,surname,titlecon,typecon,institution,faculty,department,address, email, password, hash, gender, mobile, image) VALUES(:name, :surname, :titlecon, :typecon, :institution, :faculty, :department, :address, :email, :password, :hash, :gender, :mobileno, :image)";
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $query = $dbh->prepare($sql);
         $query->bindParam(':name', $name, PDO::PARAM_STR);
@@ -57,6 +64,7 @@ if (isset($_POST['submit'])) {
         $query->bindParam(':address', $address, PDO::PARAM_STR);
         $query->bindParam(':email', $email, PDO::PARAM_STR);
         $query->bindParam(':password', $password, PDO::PARAM_STR);
+        $query->bindParam(':hash', $hash, PDO::PARAM_STR);
         $query->bindParam(':gender', $gender, PDO::PARAM_STR);
         $query->bindParam(':mobileno', $mobileno, PDO::PARAM_STR);
         $query->bindParam(':image', $image, PDO::PARAM_STR);
@@ -71,27 +79,27 @@ if (isset($_POST['submit'])) {
             date_default_timezone_set('Europe/Istanbul');
 
             require_once('class.phpmailer.php');
-            $mail             = new PHPMailer();
+            $mail = new PHPMailer();
 
             $mail->IsSMTP(); // telling the class to use SMTP
-            $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
+            $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
             // 1 = errors and messages
             // 2 = messages only
-            $mail->SMTPAuth   = true;                  // enable SMTP authentication
-            $mail->Host       = "friend.guzelhosting.com"; // sets the SMTP server
+            $mail->SMTPAuth = true;                  // enable SMTP authentication
+            $mail->Host = "friend.guzelhosting.com"; // sets the SMTP server
             $mail->SMTPSecure = "";
-            $mail->Port       = 587;                    // set the SMTP port for the GMAIL server
-            $mail->Username   = "iseser@iseser.com"; // SMTP account username
-            $mail->Password   = "r(A9O#wYz^T!";        // SMTP account password
+            $mail->Port = 587;                    // set the SMTP port for the GMAIL server
+            $mail->Username = "iseser@iseser.com"; // SMTP account username
+            $mail->Password = "r(A9O#wYz^T!";        // SMTP account password
             $mail->CharSet = "utf-8";
 
             $mail->SetFrom("iseser@iseser.com", 'ISESER NEW Registration');
 
-            $mail->AddReplyTo("iseser@iseser.com","ISESER NEW Registration");
+            $mail->AddReplyTo("iseser@iseser.com", "ISESER NEW Registration");
 
-            $mail->Subject    = "ISESER NEW Registration";
+            $mail->Subject = "ISESER NEW Registration";
 
-            $mail->AltBody    = "ISESER NEW Registration"; // optional, comment out and test
+            $mail->AltBody = "ISESER NEW Registration"; // optional, comment out and test
 
 
             $body = 'Your membership has been realized successfully. <br/>' .
@@ -105,26 +113,21 @@ if (isset($_POST['submit'])) {
 
             $address = "iseser@iseser.com";
             $mail->AddAddress($email, "iseser@iseser.com");
-            $mail->AddAddress($address ,"ISESER NEW Registration");
+            $mail->AddAddress($address, "ISESER NEW Registration");
 
-
-            if(!$mail->Send()) {
+            if (!$mail->Send()) {
                 echo "Mailer Error: " . $mail->ErrorInfo;
             } else {
                 echo $msg = 'Registration Sucessfull!';
             }
-
             echo $msg = 'Registration Sucessfull!';
             echo "<script type='text/javascript'> document.location = 'index.php'; </script>";
         } else {
             $error = "Something went wrong. Please try again";
         }
-
     } catch (PDOException $e) {
         $error = 'Unsuccesfully Insert User :' . $e->getMessage();
     }
-
-
 }
 
 $sql = "SELECT value from parameters where type ='typecon';";
@@ -142,7 +145,6 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $genders = $query->fetchAll(PDO::FETCH_ASSOC);
 
-
 ?>
 
 <!doctype html>
@@ -153,8 +155,6 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
-
 
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -164,7 +164,6 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/fileinput.min.css">
     <link rel="stylesheet" href="css/awesome-bootstrap-checkbox.css">
     <link rel="stylesheet" href="css/style.css">
-
 
     <style>
         .errorWrap {
@@ -211,12 +210,15 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <div class="brand clearfix">
 
-    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/">HOME PAGE</a></h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/">HOME PAGE</a>
+    </h4>
     <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">|</h4>
-    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/">SIGN IN</a></h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/">SIGN IN</a>
+    </h4>
     <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">|</h4>
 
-    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/signup.php">SIGN UP</a> </h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/signup.php">SIGN
+            UP</a></h4>
     <span class="menu-btn"><i class="fa fa-bars"></i></span>
     <ul class="ts-profile-nav">
 
@@ -258,12 +260,10 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
                                         <option></option>
                                         <?php
                                         foreach ($titlecons as $titlecon) {
-                                            foreach ($titlecon as $value)
-
+                                            foreach ($titlecon as $value) {
                                                 echo "<option value='" . $value . "'> " . $value . "</option>";
-
+                                            }
                                         }
-
                                         ?>
                                     </select>
 
@@ -275,10 +275,9 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
                                         <option></option>
                                         <?php
                                         foreach ($typecons as $typecon) {
-                                            foreach ($typecon as $value)
-
+                                            foreach ($typecon as $value) {
                                                 echo "<option value='" . $value . "'> " . $value . "</option>";
-
+                                            }
                                         }
                                         ?>
                                     </select>
@@ -327,10 +326,9 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
                                         <option></option>
                                         <?php
                                         foreach ($genders as $gender) {
-                                            foreach ($gender as $value)
-
+                                            foreach ($gender as $value) {
                                                 echo "<option value='" . $value . "'> " . $value . "</option>";
-
+                                            }
                                         }
                                         ?>
                                     </select>
@@ -344,7 +342,7 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-1 control-label">Avatar</label>
+                                <label class="col-sm-1 control-label">Photo</label>
                                 <div class="col-sm-5">
                                     <div><input type="file" name="image" value="poster2.jpg" class="form-control"></div>
                                 </div>
@@ -357,8 +355,6 @@ $genders = $query->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="col-md-4"></div>
 
                             </div>
-
-
                             <div class="form-group">
                                 <br>
                                 <p>Already Have Account? <a href="index.php">Signin</a></p>

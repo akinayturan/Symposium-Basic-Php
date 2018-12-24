@@ -87,7 +87,7 @@ echo "<script type='text/javascript'> document.location = 'profile.php'; </scrip
 								</form>
 								<br>
                                 <p><a class="btn btn-info btn-block"  href="signup.php" >SIGNUP</a></p>
-                                <p>If you have forgotten your password, please send an e-mail to <a href="mailto:iseser@iseser.com">iseser@iseser.com</a> .</p>
+                                <p> <a class="btn btn-red "  href="forget-password.php" >Forget Password</a> .</p>
 							</div>
 						</div>
 					</div>

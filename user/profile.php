@@ -61,12 +61,10 @@ if (strlen($_SESSION['alogin']) == 0) {
     $result = $query->fetch(PDO::FETCH_OBJ);
     $cnt = 1;
 
-
     $sql = "SELECT value from parameters where type ='typecon';";
     $query = $dbh->prepare($sql);
     $query->execute();
     $typecons = $query->fetchAll(PDO::FETCH_ASSOC);
-
 
     $sql = "SELECT value from parameters where type ='titlecon';";
     $query = $dbh->prepare($sql);
@@ -81,7 +79,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-        <meta name="description" content="">
+        <meta name="description" content="ISESER USER">
         <meta name="author" content="">
         <meta name="theme-color" content="#3e454c">
 
@@ -151,7 +149,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 
                                             <div class="form-group">
 
-                                                <label class="col-sm-2 control-label">Avatar<span
+                                                <label class="col-sm-2 control-label">Photo<span
                                                             style="color:red">*</span></label>
 
                                                 <div class="col-sm-4 text-center">

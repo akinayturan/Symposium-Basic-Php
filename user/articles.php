@@ -33,6 +33,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         $final_file = str_replace(' ', '-', date('Y-m-d-H-i-s') . "_" . $new_file_name);
 
         $title = $_POST['title'];
+        $paptype = $_POST['paptype'];
         $ptype = $_POST['ptype'];
         $articlesdata = $_POST['articlesdata'];
         $user = $_SESSION['alogin'];
@@ -53,12 +54,15 @@ if (strlen($_SESSION['alogin']) == 0) {
             $querynoti->bindParam(':notireciver', $notireciver, PDO::PARAM_STR);
             $querynoti->bindParam(':notitype', $notitype, PDO::PARAM_STR);
             $querynoti->execute();
-            $sql = "insert into articles (sender, reciver, title, ptype, articlesdata,attachment) values (:user, :reciver, :title, :ptype, :articlesdata,:attachment)";
+            $sql = "insert into articles (sender, reciver, title, paptype, ptype, articlesdata,attachment) values (:user, :reciver, :title, :paptype, :ptype, :articlesdata,:attachment)";
             $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $query = $dbh->prepare($sql);
             $query->bindParam(':user', $user, PDO::PARAM_STR);
             $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
             $query->bindParam(':title', $title, PDO::PARAM_STR);
+
+
+            $query->bindParam(':paptype', $paptype, PDO::PARAM_STR);
             $query->bindParam(':ptype', $ptype, PDO::PARAM_STR);
             $query->bindParam(':articlesdata', $articlesdata, PDO::PARAM_STR);
             $query->bindParam(':attachment', $attachment, PDO::PARAM_STR);
@@ -79,14 +83,6 @@ if (strlen($_SESSION['alogin']) == 0) {
     $cnt = 1;
 
 
-    /*
-    $sql = "SELECT * from users;";
-    $query = $dbh->prepare($sql);
-    $query->execute();
-    $result = $query->fetch(PDO::FETCH_OBJ);
-    $cnt = 1;
-    */
-
     $email = $_SESSION['alogin'];
     $sql = "SELECT * FROM `articles` WHERE `sender` = (:email);";
     $query = $dbh->prepare($sql);
@@ -94,7 +90,6 @@ if (strlen($_SESSION['alogin']) == 0) {
     $query->execute();
     $resultArticle = $query->fetchAll(PDO::FETCH_OBJ);
     $cnt = 1;
-
 
     ?>
     <!doctype html>
@@ -207,7 +202,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 
                                             <div class="form-group">
 
-                                                <label class="col-sm-2 control-label">Topic of article<span
+                                                <label class="col-sm-2 control-label">Topic of Paper<span
                                                             style="color:red">*</span></label>
                                                 <div class="col-sm-10">
                                                     <input type="text" name="articlesdata" class="form-control"
@@ -216,10 +211,14 @@ if (strlen($_SESSION['alogin']) == 0) {
                                             </div>
                                             <div class="form-group">
 
-                                                <label class="col-sm-2 control-label">Attachment<span
-                                                            style="color:red"></span></label>
+                                                <label class="col-sm-2 control-label">Paper Type<span
+                                                            style="color:red">*</span></label>
                                                 <div class="col-sm-4">
-                                                    <input type="file" name="attachment" class="form-control" required>
+                                                    <select name="paptype" class="form-control" required>
+                                                        <option value="">Select</option>
+                                                        <option value="Abstract">Abstract</option>
+                                                        <option value="Full Paper">Full Paper</option>
+                                                    </select>
                                                 </div>
 
                                                 <label class="col-sm-2 control-label">Presentation Type<span
@@ -234,6 +233,16 @@ if (strlen($_SESSION['alogin']) == 0) {
 
                                             </div>
 
+                                            <div class="form-group">
+
+                                                <label class="col-sm-2 control-label">Attachment<span
+                                                            style="color:red"></span></label>
+                                                <div class="col-sm-10">
+                                                    <input type="file" name="attachment" class="form-control" required>
+                                                </div>
+
+
+                                            </div>
 
                                             <div class="form-group">
                                                 <div class="col-sm-8 col-sm-offset-2">
@@ -257,9 +266,10 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                cellspacing="0" width="100%">
                                             <thead>
                                             <tr>
-                                                <th>Title of Paper:</th>
+                                                <th>Title of Abstract:</th>
                                                 <th>Topic of article</th>
-                                                <th>P. Type</th>
+                                                <th>Pre. Type</th>
+                                                <th>Pap. Type</th>
                                                 <th>Attachment</th>
                                                 <th>Status</th>
                                                 <th>Payment</th>
@@ -269,20 +279,23 @@ if (strlen($_SESSION['alogin']) == 0) {
                                             <tbody>
 
                                             <?php
-                                            foreach ($resultArticle as $row){ ?>
+                                            foreach ($resultArticle as $row) { ?>
                                                 <tr>
                                                     <td><?php echo htmlspecialchars($row->title) ?></td>
                                                     <td><?php echo htmlspecialchars($row->articlesdata); ?></td>
                                                     <td><?php echo htmlspecialchars($row->ptype); ?></td>
+                                                    <td><?php echo htmlspecialchars($row->paptype); ?></td>
                                                     <td>
                                                         <a target="_blank"
                                                            href="attachment/<?php echo htmlspecialchars($row->attachment); ?>"><i
                                                                     class="fa fa-folder"></i> &nbsp;Download</a></td>
                                                     <td><?php echo htmlspecialchars($row->u_status); ?></td>
                                                     <td><?php echo htmlspecialchars($row->p_status); ?></td>
-                                                    <td> <a href="articles.php?del=<?php echo $row->id; ?>&name=<?php echo htmlentities($row->title); ?>"
-                                                       onclick="return confirm('Do you want to Delete');"><i
-                                                                class="fa fa-trash" style="color:red"></i></a>&nbsp;&nbsp;</td>
+                                                    <td>
+                                                        <a href="articles.php?del=<?php echo $row->id; ?>&name=<?php echo htmlentities($row->title); ?>"
+                                                           onclick="return confirm('Do you want to Delete');"><i
+                                                                    class="fa fa-trash" style="color:red"></i></a>&nbsp;&nbsp;
+                                                    </td>
                                                 </tr>
                                             <?php } ?>
                                             </tbody>
