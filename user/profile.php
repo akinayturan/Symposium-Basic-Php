@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
+include('admin/includes/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
     header('location:index.php');
 } else {
@@ -29,26 +29,30 @@ if (strlen($_SESSION['alogin']) == 0) {
             $image = $final_file;
         }
 
-        $sql = "UPDATE users SET name=(:name), email=(:email), mobile=(:mobileno), department=(:department), Image=(:image) WHERE id=(:idedit)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':name', $name, PDO::PARAM_STR);
-        $query->bindParam(':surname', $name, PDO::PARAM_STR);
-        $query->bindParam(':titlecon', $name, PDO::PARAM_STR);
-        $query->bindParam(':typecon', $name, PDO::PARAM_STR);
-        $query->bindParam(':institution', $name, PDO::PARAM_STR);
-        $query->bindParam(':faculty', $name, PDO::PARAM_STR);
-        $query->bindParam(':department', $department, PDO::PARAM_STR);
-        $query->bindParam(':address', $name, PDO::PARAM_STR);
-        $query->bindParam(':email', $email, PDO::PARAM_STR);
-        $query->bindParam(':mobileno', $mobileno, PDO::PARAM_STR);
-        $query->bindParam(':image', $image, PDO::PARAM_STR);
-        $query->bindParam(':idedit', $idedit, PDO::PARAM_STR);
-        $query->execute();
-        $msg = "Information Updated Successfully";
-    }
-    ?>
+        try{
+            $sql = "UPDATE users SET name=(:name), email=(:email), surname=(:surname), titlecon=(:titlecon), typecon=(:typecon), institution=(:institution), faculty=(:faculty), address=(:address), department=(:department), mobile=(:mobileno), Image=(:image) WHERE id=(:idedit)";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':name', $name, PDO::PARAM_STR);
+            $query->bindParam(':surname', $surname, PDO::PARAM_STR);
+            $query->bindParam(':titlecon', $titlecon, PDO::PARAM_STR);
+            $query->bindParam(':typecon', $typecon, PDO::PARAM_STR);
+            $query->bindParam(':institution', $institution, PDO::PARAM_STR);
+            $query->bindParam(':faculty', $faculty, PDO::PARAM_STR);
+            $query->bindParam(':department', $department, PDO::PARAM_STR);
+            $query->bindParam(':address', $address, PDO::PARAM_STR);
+            $query->bindParam(':email', $email, PDO::PARAM_STR);
+            $query->bindParam(':mobileno', $mobileno, PDO::PARAM_STR);
+            $query->bindParam(':image', $image, PDO::PARAM_STR);
+            $query->bindParam(':idedit', $idedit, PDO::PARAM_STR);
+            $query->execute();
+            $msg = "Information Updated Successfully";
 
-    <?php
+        } catch (PDOException $e){
+            $error = "Information Unsuccessfully :: ". $e ;
+        }
+
+    }
+
     $email = $_SESSION['alogin'];
     $sql = "SELECT * from users where email = (:email);";
     $query = $dbh->prepare($sql);
@@ -56,6 +60,19 @@ if (strlen($_SESSION['alogin']) == 0) {
     $query->execute();
     $result = $query->fetch(PDO::FETCH_OBJ);
     $cnt = 1;
+
+
+    $sql = "SELECT value from parameters where type ='typecon';";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    $typecons = $query->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $sql = "SELECT value from parameters where type ='titlecon';";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    $titlecons = $query->fetchAll(PDO::FETCH_ASSOC);
+
     ?>
     <!doctype html>
     <html lang="en" class="no-js">
@@ -165,15 +182,41 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <label class="col-sm-2 control-label">titlecon<span
                                                             style="color:red">*</span></label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" name="titlecon" class="form-control" required
+                                                    <!--
+                                                     <input type="text" name="titlecon" class="form-control" required
                                                            value="<?php echo htmlentities($result->titlecon); ?>">
+                                                           -->
+                                                    <select name="titlecon" class="form-control" required>
+                                                        <?php
+                                                        foreach ($titlecons as $titlecon) {
+                                                            foreach ($titlecon as $value)
+                                                                if ($value == $result->titlecon) {
+                                                                    echo "<option selected value='" . $value . "'> " . $value . "</option>";
+                                                                } else {
+                                                                    echo "<option value='" . $value . "'> " . $value . "</option>";
+                                                                }
+                                                        }
+
+                                                        ?>
+                                                    </select>
+
                                                 </div>
 
                                                 <label class="col-sm-2 control-label">typecon<span
                                                             style="color:red">*</span></label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" name="typecon" class="form-control" required
-                                                           value="<?php echo htmlentities($result->typecon); ?>">
+                                                    <select name="typecon" class="form-control" required>
+                                                        <?php
+                                                        foreach ($typecons as $typecon) {
+                                                            foreach ($typecon as $value)
+                                                                if ($value == $result->typecon) {
+                                                                    echo "<option selected value='" . $value . "'> " . $value . "</option>";
+                                                                } else {
+                                                                    echo "<option value='" . $value . "'> " . $value . "</option>";
+                                                                }
+                                                        }
+                                                        ?>
+                                                    </select>
                                                 </div>
                                             </div>
 
@@ -221,10 +264,9 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                            value="<?php echo htmlentities($result->email); ?>">
                                                 </div>
 
-                                                <label class="col-sm-2 control-label">Mobile<span
-                                                            style="color:red">*</span></label>
+                                                <label class="col-sm-2 control-label">Mobile</label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" name="mobile" class="form-control" required
+                                                    <input type="text" name="mobile" class="form-control"
                                                            value="<?php echo htmlentities($result->mobile); ?>">
                                                 </div>
                                             </div>

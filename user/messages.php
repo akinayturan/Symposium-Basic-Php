@@ -1,15 +1,14 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
+include('admin/includes/config.php');
 if(strlen($_SESSION['alogin'])==0)
 	{	
 header('location:index.php');
 }
 else{
 
- ?>
-    <?php
+
     $email = $_SESSION['alogin'];
     $sql = "SELECT * from users where email = (:email);";
     $query = $dbh->prepare($sql);

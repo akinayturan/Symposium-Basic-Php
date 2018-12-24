@@ -5,20 +5,12 @@ include('includes/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
     header('location:index.php');
 } else {
-    if (isset($_GET['del']) && isset($_GET['name'])) {
+    if (isset($_GET['del'])) {
         $id = $_GET['del'];
-        $name = $_GET['name'];
-
-        $sql = "delete from users WHERE id=:id";
+        $sql = "DELETE FROM users WHERE id=:id";
         $query = $dbh->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_STR);
         $query->execute();
-
-        $sql2 = "insert into deleteduser (email) values (:name)";
-        $query2 = $dbh->prepare($sql2);
-        $query2->bindParam(':name', $name, PDO::PARAM_STR);
-        $query2->execute();
-
         $msg = "Data Deleted successfully";
     }
 
@@ -58,7 +50,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         <meta name="author" content="">
         <meta name="theme-color" content="#3e454c">
 
-        <title>Manage Users</title>
+        <title>Manage Articlesa</title>
 
         <!-- Font awesome -->
         <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -111,7 +103,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                 <div class="row">
                     <div class="col-md-12">
 
-                        <h2 class="page-title">Manage Users</h2>
+                        <h2 class="page-title">Manage Articlesa</h2>
 
                         <!-- Zero Configuration Table -->
                         <div class="panel panel-default">
@@ -127,20 +119,21 @@ if (strlen($_SESSION['alogin']) == 0) {
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Image</th>
-                                        <th>Name Surname</th>
-                                        <th>Email</th>
-                                        <th>Gender</th>
-                                        <th>Phone</th>
-                                        <th>Account</th>
+                                        <th>User Email</th>
+                                        <th>Title</th>
+                                        <th>Article</th>
+                                        <th>Attachment</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
 
-                                    <?php $sql = "SELECT * from  users ";
+                                    <?php
+                                    $reciver = 'Admin';
+                                    $sql = "SELECT * FROM  articles where reciver = (:reciver)";
                                     $query = $dbh->prepare($sql);
+                                    $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
                                     $query->execute();
                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
                                     $cnt = 1;
@@ -148,34 +141,17 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         foreach ($results as $result) { ?>
                                             <tr>
                                                 <td><?php echo htmlentities($cnt); ?></td>
-                                                <td><img src="../images/<?php echo htmlentities($result->image); ?>"
-                                                         style="width:50px; "/></td>
-                                                <td><?php echo htmlentities($result->name . $result->surname); ?></td>
-                                                <td><?php echo htmlentities($result->email); ?></td>
-                                                <td><?php echo htmlentities($result->gender); ?></td>
-                                                <td><?php echo htmlentities($result->mobile); ?></td>
+                                                <td><?php echo htmlentities($result->sender); ?></td>
+                                                <td><?php echo htmlentities($result->title); ?></td>
+                                                <td><?php echo htmlentities($result->articlesdata); ?></td>
                                                 <td>
-
-                                                    <?php if ($result->status == 1) {
-                                                        ?>
-                                                        <a href="userlist.php?confirm=<?php echo htmlentities($result->id); ?>"
-                                                           onclick="return confirm('Do you really want to Un-Confirm the Account')">Confirmed
-                                                            <i class="fa fa-check-circle"></i></a>
-                                                    <?php } else { ?>
-                                                        <a href="userlist.php?unconfirm=<?php echo htmlentities($result->id); ?>"
-                                                           onclick="return confirm('Do you really want to Confirm the Account')">Un-Confirmed
-                                                            <i class="fa fa-times-circle"></i></a>
-                                                    <?php } ?>
-                                                </td>
+                                                    <a href="../attachment/<?php echo htmlentities($result->attachment); ?>"><i
+                                                                class="fa fa-folder"></i>&nbsp; Download</a>
                                                 </td>
 
                                                 <td>
-                                                    <a href="edit-user.php?edit=<?php echo $result->id; ?>"
-                                                       onclick="return confirm('Do you want to Edit');">&nbsp; <i
-                                                                class="fa fa-pencil"></i></a>&nbsp;&nbsp;
-                                                    <a href="userlist.php?del=<?php echo $result->id; ?>&name=<?php echo htmlentities($result->email); ?>"
-                                                       onclick="return confirm('Do you want to Delete');"><i
-                                                                class="fa fa-trash" style="color:red"></i></a>&nbsp;&nbsp;
+                                                    <a href="sendreply.php?reply=<?php echo $result->sender; ?>">&nbsp;
+                                                        <i class="fa fa-mail-reply"></i></a>&nbsp;&nbsp;
                                                 </td>
                                             </tr>
                                             <?php $cnt = $cnt + 1;
@@ -210,7 +186,6 @@ if (strlen($_SESSION['alogin']) == 0) {
             }, 3000);
         });
     </script>
-
     </body>
     </html>
 <?php } ?>

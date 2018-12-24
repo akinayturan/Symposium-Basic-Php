@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('includes/config.php');
+include('admin/includes/config.php');
 if(isset($_POST['login']))
 {
 $status='1';
@@ -48,8 +48,24 @@ echo "<script type='text/javascript'> document.location = 'profile.php'; </scrip
 
 </head>
 
-<body><div class="brand clearfix">
-    <h4 class="pull-left text-white text-uppercase" >&nbsp; ISESER2019 SIGNIN</h4>
+<body>
+
+<div class="brand clearfix">
+
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/">HOME PAGE</a></h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">|</h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/">SIGN IN</a></h4>
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">|</h4>
+
+    <h4 class="pull-left text-white text-uppercase" style="margin:20px 0px 0px 20px">&nbsp;<a href="/user/signup.php">SIGN UP</a> </h4>
+    <span class="menu-btn"><i class="fa fa-bars"></i></span>
+    <ul class="ts-profile-nav">
+
+        <li class="ts-account">
+            <a href="/">ISESER2019 </a>
+
+        </li>
+    </ul>
 </div>
 	<div class="login-page bk-img">
 		<div class="form-content">
@@ -70,7 +86,8 @@ echo "<script type='text/javascript'> document.location = 'profile.php'; </scrip
 									<button class="btn btn-primary btn-block" name="login" type="submit">SIGNIN</button>
 								</form>
 								<br>
-								<p>Don't Have an Account? <a class="btn btn-info btn-block"  href="signup.php" >SIGNUP</a></p>
+                                <p><a class="btn btn-info btn-block"  href="signup.php" >SIGNUP</a></p>
+                                <p>If you have forgotten your password, please send an e-mail to iseser@iseser.com.</p>
 							</div>
 						</div>
 					</div>

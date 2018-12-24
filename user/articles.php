@@ -1,16 +1,36 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
+include('admin/includes/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
     header('location:index.php');
 } else {
+    if (isset($_GET['del']) && isset($_GET['name'])) {
+        $id = $_GET['del'];
+        $name = $_GET['name'];
+
+        $sql = "delete from articles WHERE id=:id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':id', $id, PDO::PARAM_STR);
+        $query->execute();
+
+        try {
+            $sql2 = "insert into deletedarticles (articlename) values (:articlename)";
+            $query2 = $dbh->prepare($sql2);
+            $query2->bindParam(':articlename', $name, PDO::PARAM_STR);
+            $query2->execute();
+            $msg = "Data Deleted successfully";
+        } catch (PDOException $e) {
+            var_dump($e);
+            exit();
+        }
+    }
     if (isset($_POST['submit'])) {
         $file = $_FILES['attachment']['name'];
         $file_loc = $_FILES['attachment']['tmp_name'];
         $folder = "attachment/";
         $new_file_name = strtolower($file);
-        $final_file = str_replace(' ', '-', date('Y-m-d-H-i-s') . $new_file_name);
+        $final_file = str_replace(' ', '-', date('Y-m-d-H-i-s') . "_" . $new_file_name);
 
         $title = $_POST['title'];
         $ptype = $_POST['ptype'];
@@ -24,26 +44,59 @@ if (strlen($_SESSION['alogin']) == 0) {
             $attachment = $final_file;
         }
         $notireciver = 'Admin';
-        $sqlnoti = "insert into notification (notiuser,notireciver,notitype) values (:notiuser,:notireciver,:notitype)";
-        $querynoti = $dbh->prepare($sqlnoti);
-        $querynoti->bindParam(':notiuser', $user, PDO::PARAM_STR);
-        $querynoti->bindParam(':notireciver', $notireciver, PDO::PARAM_STR);
-        $querynoti->bindParam(':notitype', $notitype, PDO::PARAM_STR);
-        $querynoti->execute();
 
-        $sql = "insert into articles (sender, reciver, title, ptype, articlesdata,attachment) values (:user, :reciver, :title, :ptype, :articlesdata,:attachment)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':user', $user, PDO::PARAM_STR);
-        $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
-        $query->bindParam(':title', $title, PDO::PARAM_STR);
-        $query->bindParam(':ptype', $ptype, PDO::PARAM_STR);
-        $query->bindParam(':articlesdata', $articlesdata, PDO::PARAM_STR);
-        $query->bindParam(':attachment', $attachment, PDO::PARAM_STR);
-        $query->execute();
-        $msg = "Article Send";
+        try {
+            $sqlnoti = "insert into notification (notiuser,notireciver,notitype) values (:notiuser,:notireciver,:notitype)";
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $querynoti = $dbh->prepare($sqlnoti);
+            $querynoti->bindParam(':notiuser', $user, PDO::PARAM_STR);
+            $querynoti->bindParam(':notireciver', $notireciver, PDO::PARAM_STR);
+            $querynoti->bindParam(':notitype', $notitype, PDO::PARAM_STR);
+            $querynoti->execute();
+            $sql = "insert into articles (sender, reciver, title, ptype, articlesdata,attachment) values (:user, :reciver, :title, :ptype, :articlesdata,:attachment)";
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':user', $user, PDO::PARAM_STR);
+            $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
+            $query->bindParam(':title', $title, PDO::PARAM_STR);
+            $query->bindParam(':ptype', $ptype, PDO::PARAM_STR);
+            $query->bindParam(':articlesdata', $articlesdata, PDO::PARAM_STR);
+            $query->bindParam(':attachment', $attachment, PDO::PARAM_STR);
+            $query->execute();
+            $msg = "Article Send";
+        } catch (PDOException $e) {
+            $error = 'Unsuccesfully Insert Article :' . $e->getMessage();
+        }
     }
-    ?>
 
+
+    $email = $_SESSION['alogin'];
+    $sql = "SELECT * from users where email = (:email);";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':email', $email, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+    $cnt = 1;
+
+
+    /*
+    $sql = "SELECT * from users;";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+    $cnt = 1;
+    */
+
+    $email = $_SESSION['alogin'];
+    $sql = "SELECT * FROM `articles` WHERE `sender` = (:email);";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':email', $email, PDO::PARAM_STR);
+    $query->execute();
+    $resultArticle = $query->fetchAll(PDO::FETCH_OBJ);
+    $cnt = 1;
+
+
+    ?>
     <!doctype html>
     <html lang="en" class="no-js">
 
@@ -117,13 +170,7 @@ if (strlen($_SESSION['alogin']) == 0) {
     </head>
 
     <body>
-    <?php
-    $sql = "SELECT * from users;";
-    $query = $dbh->prepare($sql);
-    $query->execute();
-    $result = $query->fetch(PDO::FETCH_OBJ);
-    $cnt = 1;
-    ?>
+
     <?php include('includes/header.php'); ?>
     <div class="ts-main-content">
         <?php include('includes/leftbar.php'); ?>
@@ -145,26 +192,36 @@ if (strlen($_SESSION['alogin']) == 0) {
 
                                     <div class="panel-body">
                                         <form method="post" class="form-horizontal" enctype="multipart/form-data"
-                                              onSubmit="return validate();">
+                                              onSubmit="return validate();" name="regform">
 
                                             <div class="form-group">
                                                 <input type="hidden" name="user"
                                                        value="<?php echo htmlentities($result->email); ?>">
                                                 <label class="col-sm-2 control-label">Title of Paper:<span
                                                             style="color:red">*</span></label>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-10">
                                                     <input type="text" name="title" class="form-control" required>
                                                 </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label class="col-sm-2 control-label">Topic of article<span
+                                                            style="color:red">*</span></label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="articlesdata" class="form-control"
+                                                           required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
 
                                                 <label class="col-sm-2 control-label">Attachment<span
                                                             style="color:red"></span></label>
                                                 <div class="col-sm-4">
-                                                    <input type="file" name="attachment" class="form-control">
+                                                    <input type="file" name="attachment" class="form-control" required>
                                                 </div>
-                                            </div>
 
-
-                                            <div class="form-group">
                                                 <label class="col-sm-2 control-label">Presentation Type<span
                                                             style="color:red">*</span></label>
                                                 <div class="col-sm-4">
@@ -175,12 +232,6 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                     </select>
                                                 </div>
 
-                                                <label class="col-sm-2 control-label">Topic of article<span
-                                                            style="color:red">*</span></label>
-                                                <div class="col-sm-4">
-                                                    <input type="text" name="articlesdata" class="form-control"
-                                                           required>
-                                                </div>
                                             </div>
 
 
@@ -201,15 +252,9 @@ if (strlen($_SESSION['alogin']) == 0) {
 
 
                                     <div class="panel-body">
-                                        <?php
-                                        $sql = "SELECT * FROM `articles` WHERE `sender`='akinayturan@gmail.com';";
-                                        $query = $dbh->prepare($sql);
-                                        $query->execute();
-                                        $result = $query->fetch(PDO::FETCH_OBJ);
-                                        $cnt = 1;
-                                        ?>
 
-                                        <table class="table table-bordered table-condensed">
+                                        <table id="zctb" class="display table table-striped table-bordered table-hover"
+                                               cellspacing="0" width="100%">
                                             <thead>
                                             <tr>
                                                 <th>Title of Paper:</th>
@@ -218,21 +263,28 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <th>Attachment</th>
                                                 <th>Status</th>
                                                 <th>Payment</th>
+                                                <th>Act</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <?php while ($row = $query->fetch()): ?>
+
+                                            <?php
+                                            foreach ($resultArticle as $row){ ?>
                                                 <tr>
-                                                    <td><?php echo htmlspecialchars($row['title']) ?></td>
-                                                    <td><?php echo htmlspecialchars($row['articlesdata']); ?></td>
-                                                    <td><?php echo htmlspecialchars($row['ptype']); ?></td>
+                                                    <td><?php echo htmlspecialchars($row->title) ?></td>
+                                                    <td><?php echo htmlspecialchars($row->articlesdata); ?></td>
+                                                    <td><?php echo htmlspecialchars($row->ptype); ?></td>
                                                     <td>
-                                                        <a href="attachment/<?php echo htmlspecialchars($row['attachment']); ?>"><i
+                                                        <a target="_blank"
+                                                           href="attachment/<?php echo htmlspecialchars($row->attachment); ?>"><i
                                                                     class="fa fa-folder"></i> &nbsp;Download</a></td>
-                                                    <td><?php echo htmlspecialchars($row['u_status']); ?></td>
-                                                    <td><?php echo htmlspecialchars($row['p_status']); ?></td>
+                                                    <td><?php echo htmlspecialchars($row->u_status); ?></td>
+                                                    <td><?php echo htmlspecialchars($row->p_status); ?></td>
+                                                    <td> <a href="articles.php?del=<?php echo $row->id; ?>&name=<?php echo htmlentities($row->title); ?>"
+                                                       onclick="return confirm('Do you want to Delete');"><i
+                                                                class="fa fa-trash" style="color:red"></i></a>&nbsp;&nbsp;</td>
                                                 </tr>
-                                            <?php endwhile; ?>
+                                            <?php } ?>
                                             </tbody>
                                         </table>
 

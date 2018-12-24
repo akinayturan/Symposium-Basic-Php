@@ -1,4 +1,10 @@
-﻿<?php 
+﻿<?php
+// DB credentials.
+//define('DB_HOST','localhost');
+//define('DB_USER','ises9801_isese');
+//define('DB_PASS','N_3m6!18');
+//define('DB_NAME','ises9801_kayit');
+
 // DB credentials.
 define('DB_HOST','localhost');
 define('DB_USER','root');
@@ -13,4 +19,6 @@ catch (PDOException $e)
 {
 exit("Error: " . $e->getMessage());
 }
+$error = NULL;
+$msg = NULL;
 ?>

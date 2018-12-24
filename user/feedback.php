@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
+include('admin/includes/config.php');
 if(strlen($_SESSION['alogin'])==0)
 	{	
 header('location:index.php');
@@ -44,9 +44,25 @@ if(isset($_POST['submit']))
 	$query-> bindParam(':attachment', $attachment, PDO::PARAM_STR);
     $query->execute(); 
 	$msg="Feedback Send";
-}    
-?>
+}
 
+
+$email = $_SESSION['alogin'];
+$sql = "SELECT * from users where email = (:email);";
+$query = $dbh->prepare($sql);
+$query->bindParam(':email', $email, PDO::PARAM_STR);
+$query->execute();
+$result = $query->fetch(PDO::FETCH_OBJ);
+$cnt = 1;
+
+/*
+$sql = "SELECT * from users;";
+		$query = $dbh -> prepare($sql);
+		$query->execute();
+		$result=$query->fetch(PDO::FETCH_OBJ);
+		$cnt=1;
+*/
+?>
 <!doctype html>
 <html lang="en" class="no-js">
 
@@ -101,13 +117,6 @@ if(isset($_POST['submit']))
 </head>
 
 <body>
-<?php
-		$sql = "SELECT * from users;";
-		$query = $dbh -> prepare($sql);
-		$query->execute();
-		$result=$query->fetch(PDO::FETCH_OBJ);
-		$cnt=1;	
-?>
 	<?php include('includes/header.php');?>
 	<div class="ts-main-content">
 	<?php include('includes/leftbar.php');?>
