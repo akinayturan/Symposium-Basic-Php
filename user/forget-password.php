@@ -94,105 +94,140 @@ function createHash($uzunluk = 16)
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="hr-dashed"></div>
-                    <?php if ($error) { ?>
-                        <div class="errorWrap"><strong>ERROR</strong>
-                        :<?php echo htmlentities($error); ?> </div><?php } else if ($msg) { ?>
-                        <div class="succWrap"><strong>SUCCESS</strong>:<?php echo htmlentities($msg); ?>
-                        </div><?php } ?>
-                    <div class="well row pt-2x pb-3x bk-light text-center">
-
-                        <div style="width:750px; background:#f1f1f1; border:1px solid #ddd; border-radius:10px; margin:10px auto; padding:15px;">
-                            <?php
-                            if (@$_POST["ara"]) {
-                                $eposta = $_POST["eposta"];
-                                $query = $dbh->prepare('SELECT email, hash FROM users WHERE email = ?');
-                                $query->execute([$eposta]);
-                                if ($query->rowCount()) {
-                                    $row = $query->fetch(PDO::FETCH_ASSOC);
 
 
-                                    error_reporting(E_STRICT);
+                    <h2 class="page-title">Change Password</h2>
 
-                                    date_default_timezone_set('Europe/Istanbul');
-
-                                    require_once('class.phpmailer.php');
-                                    $mail = new PHPMailer();
-
-                                    $mail->IsSMTP(); // telling the class to use SMTP
-                                    $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
-                                    // 1 = errors and messages
-                                    // 2 = messages only
-                                    $mail->SMTPAuth = true;                  // enable SMTP authentication
-                                    $mail->Host = "friend.guzelhosting.com"; // sets the SMTP server
-                                    $mail->SMTPSecure = "";
-                                    $mail->Port = 587;                    // set the SMTP port for the GMAIL server
-                                    $mail->Username = "iseser@iseser.com"; // SMTP account username
-                                    $mail->Password = "r(A9O#wYz^T!";        // SMTP account password
-                                    $mail->CharSet = "utf-8";
-
-                                    $mail->SetFrom("iseser@iseser.com", 'ISESER refresh password');
-
-                                    $mail->AddReplyTo("iseser@iseser.com", "ISESER refresh password");
-
-                                    $mail->Subject = "ISESER refresh password";
-
-                                    $mail->AltBody = "ISESER refresh password"; // optional, comment out and test
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Form fields</div>
+                                <div class="panel-body">
+                                    <?php if ($error) { ?>
+                                        <div class="errorWrap"><strong>ERROR</strong>
+                                        :<?php echo htmlentities($error); ?> </div><?php } else if ($msg) { ?>
+                                        <div class="succWrap"><strong>SUCCESS</strong>
+                                        :<?php echo htmlentities($msg); ?> </div><?php } ?>
+                                    <form class="form-horizontal" action="" method="POST">
+                                        <?php
+                                        if (@$_POST["ara"]) {
+                                            $eposta = $_POST["eposta"];
+                                            $query = $dbh->prepare('SELECT email, hash FROM users WHERE email = ?');
+                                            $query->execute([$eposta]);
+                                            if ($query->rowCount()) {
+                                                $row = $query->fetch(PDO::FETCH_ASSOC);
 
 
-                                    $body = 'Click on the link to refresh your password <a href="https://iseser.com/user/forget-password.php?yenile=' . $row["hash"] . '">https://iseser.com/user/forget-password.php?yenile=' . $row["hash"] . '</a>' .
-                                        '<br/> iseser.com <br/>';
+                                                error_reporting(E_STRICT);
 
-                                    $mail->MsgHTML($body);
+                                                date_default_timezone_set('Europe/Istanbul');
 
-                                    $mail->AddAddress($eposta, "iseser@iseser.com");
+                                                require_once('class.phpmailer.php');
+                                                $mail = new PHPMailer();
 
-                                    if (!$mail->Send()) {
-                                        echo "Mailer Error: " . $mail->ErrorInfo;
-                                    } else {
-                                        echo $msg = 'The link to renew the password was sent to your mail address.';
-                                    }
-                                } else {
-                                    echo 'No Email Address';
-                                }
-                            }
+                                                $mail->IsSMTP(); // telling the class to use SMTP
+                                                $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
+                                                // 1 = errors and messages
+                                                // 2 = messages only
+                                                $mail->SMTPAuth = true;                  // enable SMTP authentication
+                                                $mail->Host = "friend.guzelhosting.com"; // sets the SMTP server
+                                                $mail->SMTPSecure = "";
+                                                $mail->Port = 587;                    // set the SMTP port for the GMAIL server
+                                                $mail->Username = "iseser@iseser.com"; // SMTP account username
+                                                $mail->Password = "r(A9O#wYz^T!";        // SMTP account password
+                                                $mail->CharSet = "utf-8";
 
-                            if (isset($_GET["yenile"])) {
-                                $hash = $_GET["yenile"];
-                                $query = $dbh->prepare('SELECT * FROM users WHERE hash = ?');
-                                $query->execute([$hash]);
-                                if ($query->rowCount()) {
-                                    if (@$_POST["sifreYenile"]) {
-                                        $sifre = $_POST["sifre"];
-                                        $yeniHash = createHash();
-                                        $query = $dbh->prepare('UPDATE users SET password = ?, hash = ? WHERE hash = ?');
-                                        $query->execute([md5($sifre), $yeniHash, $hash]);
-                                        header("Location:https://iseser.com/user/");
-                                    }
-                                    ?>
-                                    <form action="" method="POST">
-                                        Enter New Password: <input type="password" name="sifre"/>
-                                        <input type="submit" value="Refresh Password" name="sifreYenile"/>
+                                                $mail->SetFrom("iseser@iseser.com", 'ISESER refresh password');
+
+                                                $mail->AddReplyTo("iseser@iseser.com", "ISESER refresh password");
+
+                                                $mail->Subject = "ISESER refresh password";
+
+                                                $mail->AltBody = "ISESER refresh password"; // optional, comment out and test
+
+
+                                                $body = 'Click on the link to refresh your password <a href="https://iseser.com/user/forget-password.php?yenile=' . $row["hash"] . '">https://iseser.com/user/forget-password.php?yenile=' . $row["hash"] . '</a>' .
+                                                    '<br/> iseser.com <br/>';
+
+                                                $mail->MsgHTML($body);
+
+                                                $mail->AddAddress($eposta, "iseser@iseser.com");
+
+                                                if (!$mail->Send()) {
+                                                    echo "Mailer Error: " . $mail->ErrorInfo;
+                                                } else {
+                                                    echo $msg = 'The link to renew the password was sent to your mail address.';
+                                                }
+                                            } else {
+                                                echo 'No Email Address';
+                                            }
+                                        }
+
+                                        if (isset($_GET["yenile"])) {
+                                            $hash = $_GET["yenile"];
+                                            $query = $dbh->prepare('SELECT * FROM users WHERE hash = ?');
+                                            $query->execute([$hash]);
+                                            if ($query->rowCount()) {
+                                                if (@$_POST["sifreYenile"]) {
+                                                    $sifre = $_POST["sifre"];
+                                                    $yeniHash = createHash();
+                                                    $query = $dbh->prepare('UPDATE users SET password = ?, hash = ? WHERE hash = ?');
+                                                    $query->execute([md5($sifre), $yeniHash, $hash]);
+                                                    header("Location:https://iseser.com/user/");
+                                                }
+                                                ?>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">Enter New Password:</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="password" class="form-control" name="sifre">
+                                                    </div>
+                                                </div>
+                                                <div class="hr-dashed"></div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-8 col-sm-offset-4">
+                                                        <input class="btn btn-primary" name="sifreYenile"
+                                                               value="Refresh Password"
+                                                               type="submit">
+                                                    </div>
+                                                </div>
+
+                                                <?php
+                                            } else {
+                                                header("Location:https://iseser.com/user/");
+                                            }
+                                        } else {
+                                            ?>
+
+
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">E-Mail Address:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="eposta">
+                                                </div>
+                                            </div>
+                                            <div class="hr-dashed"></div>
+                                            <div class="form-group">
+                                                <div class="col-sm-8 col-sm-offset-4">
+                                                    <input class="btn btn-primary" name="ara" value="Send New Password"
+                                                           type="submit">
+                                                </div>
+                                            </div>
+                                        <?php } ?>
                                     </form>
-                                    <?php
-                                } else {
-                                    header("Location:https://iseser.com/user/");
-                                }
-                            } else {
-                                ?>
-                                <form action="" method="POST">
-                                    E-Mail Address: <input type="text" name="eposta"/>
-                                    <br/>
-                                    <br/>
-                                    <input type="submit" value="Send New Password" name="ara"/>
-                                </form>
-                            <?php } ?>
+
+
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Loading Scripts -->
