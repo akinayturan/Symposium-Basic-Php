@@ -7,35 +7,65 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
     if (isset($_GET['del'])) {
         $id = $_GET['del'];
-        $sql = "DELETE FROM users WHERE id=:id";
+        $sql = "DELETE FROM articles WHERE id=:id";
         $query = $dbh->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_STR);
         $query->execute();
         $msg = "Data Deleted successfully";
     }
 
-    if (isset($_REQUEST['unconfirm'])) {
-        $aeid = intval($_GET['unconfirm']);
+    if (isset($_REQUEST['usunconfirm'])) {
+        $aeid = intval($_GET['usunconfirm']);
         $memstatus = 1;
-        $sql = "UPDATE users SET status=:status WHERE  id=:aeid";
+        $sql = "UPDATE articles SET u_status=:u_status WHERE  id=:aeid";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':status', $memstatus, PDO::PARAM_STR);
+        $query->bindParam(':u_status', $memstatus, PDO::PARAM_STR);
         $query->bindParam(':aeid', $aeid, PDO::PARAM_STR);
         $query->execute();
         $msg = "Changes Sucessfully";
     }
 
-    if (isset($_REQUEST['confirm'])) {
-        $aeid = intval($_GET['confirm']);
+    if (isset($_REQUEST['usconfirm'])) {
+        $aeid = intval($_GET['usconfirm']);
         $memstatus = 0;
-        $sql = "UPDATE users SET status=:status WHERE  id=:aeid";
+        $sql = "UPDATE articles SET u_status=:u_status WHERE  id=:aeid";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':status', $memstatus, PDO::PARAM_STR);
+        $query->bindParam(':u_status', $memstatus, PDO::PARAM_STR);
         $query->bindParam(':aeid', $aeid, PDO::PARAM_STR);
         $query->execute();
         $msg = "Changes Sucessfully";
     }
 
+
+    if (isset($_REQUEST['psunconfirm'])) {
+        $aeid = intval($_GET['psunconfirm']);
+        $memstatus = 1;
+        $sql = "UPDATE articles SET p_status=:p_status WHERE  id=:aeid";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':p_status', $memstatus, PDO::PARAM_STR);
+        $query->bindParam(':aeid', $aeid, PDO::PARAM_STR);
+        $query->execute();
+        $msg = "Changes Sucessfully";
+    }
+
+    if (isset($_REQUEST['psconfirm'])) {
+        $aeid = intval($_GET['psconfirm']);
+        $memstatus = 0;
+        $sql = "UPDATE articles SET p_status=:p_status WHERE  id=:aeid";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':p_status', $memstatus, PDO::PARAM_STR);
+        $query->bindParam(':aeid', $aeid, PDO::PARAM_STR);
+        $query->execute();
+        $msg = "Changes Sucessfully";
+    }
+
+    $reciver = 'Admin';
+    $sql = "SELECT * FROM  articles where reciver = (:reciver)";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
+    $query->execute();
+    $results = $query->fetchAll(PDO::FETCH_OBJ);
+    $cnt = 1;
 
     ?>
 
@@ -122,21 +152,17 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <th>User Email</th>
                                         <th>Title</th>
                                         <th>Article</th>
+                                        <th>paptype</th>
                                         <th>Attachment</th>
                                         <th>Action</th>
+                                        <th>U. Status</th>
+                                        <th>P. Status</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
 
                                     <?php
-                                    $reciver = 'Admin';
-                                    $sql = "SELECT * FROM  articles where reciver = (:reciver)";
-                                    $query = $dbh->prepare($sql);
-                                    $query->bindParam(':reciver', $reciver, PDO::PARAM_STR);
-                                    $query->execute();
-                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                    $cnt = 1;
                                     if ($query->rowCount() > 0) {
                                         foreach ($results as $result) { ?>
                                             <tr>
@@ -144,14 +170,43 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <td><?php echo htmlentities($result->sender); ?></td>
                                                 <td><?php echo htmlentities($result->title); ?></td>
                                                 <td><?php echo htmlentities($result->articlesdata); ?></td>
+                                                <td><?php echo htmlentities($result->paptype); ?></td>
+
+
                                                 <td>
                                                     <a href="../articles/<?php echo htmlentities($result->attachment); ?>"><i
                                                                 class="fa fa-folder"></i>&nbsp; Download</a>
                                                 </td>
-
                                                 <td>
-                                                    <a href="sendreply.php?reply=<?php echo $result->sender; ?>">&nbsp;
-                                                        <i class="fa fa-mail-reply"></i></a>&nbsp;&nbsp;
+                                                    <a href="articles.php?del=<?php echo $result->id; ?>&name=<?php echo htmlentities($result->title); ?>"
+                                                       onclick="return confirm('Do you want to Delete');"><i
+                                                                class="fa fa-trash" style="color:red"></i></a>&nbsp;&nbsp;
+                                                </td>
+                                                <td>
+
+                                                    <?php if ($result->u_status == 1) {
+                                                        ?>
+                                                        <a href="articles.php?usconfirm=<?php echo htmlentities($result->id); ?>"
+                                                           onclick="return confirm('Do you really want to Un-Confirm the Articles')">Confirmed
+                                                            <i class="fa fa-check-circle"></i></a>
+                                                    <?php } else { ?>
+                                                        <a href="articles.php?usunconfirm=<?php echo htmlentities($result->id); ?>"
+                                                           onclick="return confirm('Do you really want to Confirm the Articles')">Un-Confirmed
+                                                            <i class="fa fa-times-circle"></i></a>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+
+                                                    <?php if ($result->p_status == 1) {
+                                                        ?>
+                                                        <a href="articles.php?psconfirm=<?php echo htmlentities($result->id); ?>"
+                                                           onclick="return confirm('Do you really want to Un-Confirm the Payment')">Confirmed
+                                                            <i class="fa fa-check-circle"></i></a>
+                                                    <?php } else { ?>
+                                                        <a href="articles.php?psunconfirm=<?php echo htmlentities($result->id); ?>"
+                                                           onclick="return confirm('Do you really want to Confirm the Payment')">Un-Confirmed
+                                                            <i class="fa fa-times-circle"></i></a>
+                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                             <?php $cnt = $cnt + 1;

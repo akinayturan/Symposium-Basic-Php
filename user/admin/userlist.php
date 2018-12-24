@@ -44,7 +44,11 @@ if (strlen($_SESSION['alogin']) == 0) {
         $msg = "Changes Sucessfully";
     }
 
-
+    $sql = "SELECT * from  users ";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    $results = $query->fetchAll(PDO::FETCH_OBJ);
+    $cnt = 1;
     ?>
 
     <!doctype html>
@@ -97,12 +101,9 @@ if (strlen($_SESSION['alogin']) == 0) {
             }
 
         </style>
-
     </head>
-
     <body>
     <?php include('includes/header.php'); ?>
-
     <div class="ts-main-content">
         <?php include('includes/leftbar.php'); ?>
         <div class="content-wrapper">
@@ -130,28 +131,26 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <th>Image</th>
                                         <th>Name Surname</th>
                                         <th>Email</th>
+                                        <th>titlecon</th>
+                                        <th>typecon</th>
                                         <th>Gender</th>
                                         <th>Phone</th>
                                         <th>Account</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
-
                                     <tbody>
-
-                                    <?php $sql = "SELECT * from  users ";
-                                    $query = $dbh->prepare($sql);
-                                    $query->execute();
-                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                    $cnt = 1;
+                                    <?php
                                     if ($query->rowCount() > 0) {
                                         foreach ($results as $result) { ?>
                                             <tr>
                                                 <td><?php echo htmlentities($cnt); ?></td>
                                                 <td><img src="../images/<?php echo htmlentities($result->image); ?>"
                                                          style="width:50px; "/></td>
-                                                <td><?php echo htmlentities($result->name . $result->surname); ?></td>
+                                                <td><?php echo htmlentities($result->name . " " . $result->surname); ?></td>
                                                 <td><?php echo htmlentities($result->email); ?></td>
+                                                <td><?php echo htmlentities($result->titlecon); ?></td>
+                                                <td><?php echo htmlentities($result->typecon); ?></td>
                                                 <td><?php echo htmlentities($result->gender); ?></td>
                                                 <td><?php echo htmlentities($result->mobile); ?></td>
                                                 <td>

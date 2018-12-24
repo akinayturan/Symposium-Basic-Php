@@ -13,8 +13,6 @@ if(isset($_GET['edit']))
 		$editid=$_GET['edit'];
 	}
 
-
-	
 if(isset($_POST['submit']))
   {
 	$file = $_FILES['image']['name'];
