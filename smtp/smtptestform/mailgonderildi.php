@@ -31,11 +31,11 @@ $mail->SMTPDebug  = 2;                     // enables SMTP debug information (fo
                                            // 1 = errors and messages
                                            // 2 = messages only
 $mail->SMTPAuth   = true;                  // enable SMTP authentication
-$mail->Host       = "friend.guzelhosting.com"; // sets the SMTP server
+$mail->Host       = "host"; // sets the SMTP server
 $mail->SMTPSecure = "";
 $mail->Port       = 587;                    // set the SMTP port for the GMAIL server
-$mail->Username   = "iseser@iseser.com"; // SMTP account username
-$mail->Password   = "r(A9O#wYz^T!";        // SMTP account password
+$mail->Username   = "mail"; // SMTP account username
+$mail->Password   = "mailpass";        // SMTP account password
 
 $mail->SetFrom("iseser@iseser.com", 'ISESER NEW Registration');
 
